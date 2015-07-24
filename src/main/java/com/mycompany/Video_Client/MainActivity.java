@@ -9,17 +9,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 import java.net.Socket;
 
 
 public class MainActivity extends Activity {
+
+    protected static boolean videoActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +46,7 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void ConnectToServer(View view)
+    public void Connect(View view)
     {
         // Get textbox reference
         EditText textObj = (EditText) findViewById(R.id.ServerInfo);
@@ -72,9 +69,8 @@ public class MainActivity extends Activity {
                     // Read the buffer size and send receive confirm
                     DataInputStream dis = new DataInputStream(socket.getInputStream());
 
-                    int i = 0;
-                    // TODO: change this while loop to listen to a "disconnect" button event
-                    while (i < 5000)
+                    // videoActive becomes false when Disconnect button is clicked.
+                    while (videoActive)
                     {
                         // Read image size and look for line feed to denote the start of image
                         ByteArrayOutputStream c = new ByteArrayOutputStream();
@@ -100,8 +96,10 @@ public class MainActivity extends Activity {
                                 picture.setImageBitmap(bitmap);
                             }
                         });
-                        i++;
                     }
+
+                    // once Disconnect is pressed
+                    socket.close();
                 }
                 catch (Exception e)
                 {
@@ -109,6 +107,12 @@ public class MainActivity extends Activity {
                 }
             }
         });
+        videoActive = true;
         thread.start();
+    }
+
+    public void Disconnect(View view)
+    {
+        videoActive = false;
     }
 }
