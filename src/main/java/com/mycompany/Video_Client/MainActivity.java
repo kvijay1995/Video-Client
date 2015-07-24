@@ -62,18 +62,15 @@ public class MainActivity extends Activity {
         final int port = Integer.valueOf(port_s);
 
         // Start a new thread to avoid NetworkOnMainThreadException
-        Thread thread = new Thread(new Runnable()
-        {
+        Thread thread = new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 try
                 {
                     Socket socket = new Socket(serverAddress, port);
 
                     // Read the buffer size and send receive confirm
                     DataInputStream dis = new DataInputStream(socket.getInputStream());
-
 
                     int i = 0;
                     // TODO: change this while loop to listen to a "disconnect" button event
@@ -82,7 +79,7 @@ public class MainActivity extends Activity {
                         // Read image size and look for line feed to denote the start of image
                         ByteArrayOutputStream c = new ByteArrayOutputStream();
                         int j = dis.readByte();
-                        while(j != 10)
+                        while (j != 10)
                         {
                             c.write(j);
                             j = dis.readByte();
@@ -90,7 +87,7 @@ public class MainActivity extends Activity {
                         int buffer_size = Integer.parseInt(c.toString());
 
                         // Read image as stream of bytes
-                         byte[] b = new byte[buffer_size];
+                        byte[] b = new byte[buffer_size];
                         dis.readFully(b);
 
                         // TODO: find a way to remove the final keyword for bitmap
@@ -110,8 +107,8 @@ public class MainActivity extends Activity {
                 {
                     e.printStackTrace();
                 }
-            });
-            thread.start();
-        }
+            }
+        });
+        thread.start();
     }
 }
